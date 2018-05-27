@@ -7,13 +7,18 @@ public class Rocket : MonoBehaviour {
     Rigidbody shipRigidBody;
     Vector3 centerOFMass;
 
-    private float rotationCoeff = 3;
+    AudioSource audioSource;
+
+    private float rotationCoeff = 15;
+    private float accelerationCoeff = 11;
 
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start () {
         shipRigidBody = GetComponent<Rigidbody>();
-        centerOFMass = new Vector3(0f, 0f, 0);
+        audioSource = GetComponent<AudioSource>();
+
+        //centerOFMass = new Vector3(0f, 0f, 0);
         //centerOFMass = shipRigidBody.centerOfMass;
         //shipRigidBody.centerOfMass = centerOFMass;
     }
@@ -29,16 +34,32 @@ public class Rocket : MonoBehaviour {
     {
         if (Input.GetKey(KeyCode.Space))
         {
-            shipRigidBody.AddRelativeForce(Vector3.up);
-            //shipRigidBody.centerOfMass = centerOFMass;
+            shipRigidBody.AddRelativeForce(accelerationCoeff * Vector3.up);
+        }
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            audioSource.Play();
+        }
+        if (Input.GetKeyUp(KeyCode.Space))
+        {
+            //shipRigidBody.AddRelativeForce(accelerationCoeff * Vector3.up);
+            audioSource.Stop();
         }
         if (Input.GetKey(KeyCode.A))
         {
             transform.Rotate(rotationCoeff * Vector3.forward * Time.deltaTime);
         }
-        else if (Input.GetKey(KeyCode.D))
+        if (Input.GetKey(KeyCode.D))
         {
             transform.Rotate(rotationCoeff  * -1*Vector3.forward * Time.deltaTime);
+        }
+        if (Input.GetKey(KeyCode.W))
+        {
+            transform.Rotate(rotationCoeff * Vector3.right * Time.deltaTime);
+        }
+        if (Input.GetKey(KeyCode.S))
+        {
+            transform.Rotate(rotationCoeff * -1 * Vector3.right * Time.deltaTime);
         }
 
     }
