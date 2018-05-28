@@ -209,7 +209,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1496457409968024}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.9, z: 0}
+  m_LocalPosition: {x: -12.2, y: 0.9, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4810250397944664}
@@ -570,7 +570,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 6f816175bc655a64a98910c9c1d63df4, type: 3}
+  m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 0.183
   m_Pitch: 1.1
@@ -667,8 +667,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 730684c232925f34da4c69562e1881f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  audio_mainEngine: {fileID: 8300000, guid: 6f816175bc655a64a98910c9c1d63df4, type: 3}
+  audio_win: {fileID: 8300000, guid: bc789f2bc3e08e141beee89fc75cd5ed, type: 3}
+  audio_death: {fileID: 8300000, guid: cbf146c10c8ca8f449c7103897638142, type: 3}
   rotationCoeff: 30
   accelerationCoeff: 15
+  state: 0
 --- !u!135 &135413385701764972
 SphereCollider:
   m_ObjectHideFlags: 1

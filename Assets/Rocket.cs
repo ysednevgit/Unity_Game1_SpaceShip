@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Rocket : MonoBehaviour {
 
@@ -8,9 +9,17 @@ public class Rocket : MonoBehaviour {
     Vector3 centerOFMass;
 
     AudioSource audioSource;
+    [SerializeField] AudioClip audio_mainEngine;
+    [SerializeField] AudioClip audio_win;
+    [SerializeField] AudioClip audio_death;
+
 
     [SerializeField] float rotationCoeff = 15;
     [SerializeField] float accelerationCoeff = 11.5f;
+
+    enum State { Alive, Dying, Transcending };
+
+    [SerializeField] State state = State.Alive;
 
 
     // Use this for initialization
@@ -32,9 +41,16 @@ public class Rocket : MonoBehaviour {
 
     private void OnCollisionEnter(Collision collision)
     {
+        if (state != State.Alive) { return; }
+
         switch (collision.gameObject.tag)
         {
             case "Friendly": //
+                break;
+            case "Finish":
+                state = State.Transcending;
+                audioSource.PlayOneShot(audio_win);
+                Invoke("LoadNextScene", 2f);
                 break;
             default:
                 Die();
@@ -42,13 +58,31 @@ public class Rocket : MonoBehaviour {
         }
     }
 
+    private void LoadNextScene()
+    {
+        SceneManager.LoadScene(1);
+    }
+
+    private void RestartScene()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
     private void Die()
     {
-        print("Player Died!");
+        state = State.Dying;
+        audioSource.Stop();
+        audioSource.PlayOneShot(audio_death);
+        Invoke("RestartScene", 3f);
     }
 
     private void ProcessInput()
     {
+        if (state == State.Transcending || state == State.Dying)
+        {
+            return;
+        }
+
         Thrust();
         Rotate();
     }
@@ -61,7 +95,7 @@ public class Rocket : MonoBehaviour {
         }
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            audioSource.Play();
+            audioSource.PlayOneShot(audio_mainEngine);
         }
         if (Input.GetKeyUp(KeyCode.Space))
         {
