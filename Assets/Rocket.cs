@@ -9,8 +9,8 @@ public class Rocket : MonoBehaviour {
 
     AudioSource audioSource;
 
-    private float rotationCoeff = 15;
-    private float accelerationCoeff = 11;
+    [SerializeField] float rotationCoeff = 15;
+    [SerializeField] float accelerationCoeff = 11.5f;
 
 
     // Use this for initialization
@@ -29,6 +29,23 @@ public class Rocket : MonoBehaviour {
         ProcessInput();
 
 	}
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        switch (collision.gameObject.tag)
+        {
+            case "Friendly": //
+                break;
+            default:
+                Die();
+                break;
+        }
+    }
+
+    private void Die()
+    {
+        print("Player Died!");
+    }
 
     private void ProcessInput()
     {
