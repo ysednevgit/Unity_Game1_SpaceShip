@@ -13,6 +13,10 @@ public class Rocket : MonoBehaviour {
     [SerializeField] AudioClip audio_win;
     [SerializeField] AudioClip audio_death;
 
+    [SerializeField] ParticleSystem particle_explosion;
+    [SerializeField] ParticleSystem particle_thrust;
+    [SerializeField] ParticleSystem particle_win;
+
 
     [SerializeField] float rotationCoeff = 15;
     [SerializeField] float accelerationCoeff = 11.5f;
@@ -20,6 +24,8 @@ public class Rocket : MonoBehaviour {
     enum State { Alive, Dying, Transcending };
 
     [SerializeField] State state = State.Alive;
+
+    private int numberOfLevels = 3;
 
 
     // Use this for initialization
@@ -50,6 +56,7 @@ public class Rocket : MonoBehaviour {
             case "Finish":
                 state = State.Transcending;
                 audioSource.PlayOneShot(audio_win);
+                particle_win.Play();
                 Invoke("LoadNextScene", 2f);
                 break;
             default:
@@ -60,7 +67,9 @@ public class Rocket : MonoBehaviour {
 
     private void LoadNextScene()
     {
-        SceneManager.LoadScene(1);
+        int currentLevelIndex = SceneManager.GetActiveScene().buildIndex;
+
+        SceneManager.LoadScene(currentLevelIndex + 1 < numberOfLevels ? currentLevelIndex + 1 : 0);
     }
 
     private void RestartScene()
@@ -73,6 +82,7 @@ public class Rocket : MonoBehaviour {
         state = State.Dying;
         audioSource.Stop();
         audioSource.PlayOneShot(audio_death);
+        particle_explosion.Play();
         Invoke("RestartScene", 3f);
     }
 
@@ -83,8 +93,20 @@ public class Rocket : MonoBehaviour {
             return;
         }
 
+        if (Debug.isDebugBuild)
+        {
+            checkDebugKeys();
+        }
         Thrust();
         Rotate();
+    }
+
+    private void checkDebugKeys()
+    {
+        if (Input.GetKey(KeyCode.L))
+        {
+            LoadNextScene();
+        }
     }
 
     private void Thrust()
@@ -96,11 +118,13 @@ public class Rocket : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.Space))
         {
             audioSource.PlayOneShot(audio_mainEngine);
+            particle_thrust.Play();
         }
         if (Input.GetKeyUp(KeyCode.Space))
         {
             //shipRigidBody.AddRelativeForce(accelerationCoeff * Vector3.up);
             audioSource.Stop();
+            particle_thrust.Stop();
         }
     }
 
